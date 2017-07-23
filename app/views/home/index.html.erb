@@ -1,0 +1,86 @@
+ <header>
+<div class="logo">
+	QUORA
+</div>
+<ul>
+	<li>
+		<%= link_to "Sign Out", destroy_user_session_path, method: :delete %>
+	</li>
+
+</ul>
+<!-- <nav>
+<ul>
+	<li>
+		<%= link_to "Sign In", user_session_path, method: :create %>
+	</li>
+
+</ul> 
+
+</nav> -->
+</header>
+
+<main>
+	<div>
+	<% Question.all.each do |question| %>
+		<li>   
+		<div class="question_content" style="background-color: lightgrey">
+			
+			 
+				<h2>Question: <%= question.content %></h2>
+
+				<%= form_tag('/upvote_question',method: :post) do %>
+				<%= hidden_field_tag( :question_id, question.id) %>
+				<%= hidden_field_tag( :user_id, current_user.id) %>
+				
+				<%= submit_tag "Upvote" %>
+			
+				<% end %>
+
+				<% question.answers.each do |answer|%>
+				<h3>Answer: </h3>
+					<%= answer.content %>
+					<%= form_tag('/upvote_answer',method: :post) do %>
+					<%= hidden_field_tag( :answer_id, answer.id) %>
+					<%= hidden_field_tag( :user_id, current_user.id) %>
+					
+					<%= submit_tag "Upvote" %>
+				
+					<% end %>
+				<%end%>
+
+				<div class="answer_form">
+				<%=form_for question.answers.new do |f|%>
+					<%= hidden_field_tag 'answer[question_id]', question.id %>
+					<%=f.text_area :content%>
+					
+					<div class="actions">
+					<%= f.submit id:'post_answer'%>
+					</div>
+
+				<%end%>
+			</div>
+			
+			
+			</div>
+		</li>
+	<% end %>
+
+	</div>
+
+	<section>
+			<div class="create_question">
+				<%= form_for @question, remote: true do |f|%>
+					<%= f.label :Question%>
+					<br>
+					<%=f.text_area :content %>
+					<br>
+					<div class="actions">
+						<%= f.submit id:'create_question'%>
+					</div>
+				<%end%>
+			</div>
+	</section>
+</main>
+
+<button id="moveToTop">Move To Top</button>
+
